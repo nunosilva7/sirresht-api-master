@@ -165,7 +165,7 @@ export const updatePasswordByEmail = async (req: Request, res: Response, next: N
 
     try {
         const [affectedRows] = await sequelize.models.user.update({
-            password: req.body.password
+            hashedPassword: await bcrypt.hash(req.body.password, saltRounds)
         }, {
             where: {
                 email: req.body.email
