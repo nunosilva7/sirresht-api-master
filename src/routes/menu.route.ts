@@ -1,6 +1,7 @@
 import express from "express";
 import * as controller from "../controllers/menu.controller";
 import authenticateJwt from "../middleware/auth/authenticateJwt";
+import * as authController from "../controllers/auth.controller"
 
 const router = express.Router();
 
@@ -11,11 +12,11 @@ router.route("/")
 router.use(authenticateJwt);
 
 router.route("/")
-    .post(controller.create);
+    .post(authController.verifyAdmin,controller.create);
 
 router.route("/:menuId")
     .get(controller.getById)
-    .put(controller.updateById)
-    .delete(controller.deleteById);
+    .put(authController.verifyAdmin,controller.updateById)
+    .delete(authController.verifyAdmin,controller.deleteById);
 
 export default router;

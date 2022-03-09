@@ -223,31 +223,3 @@ export const verifyAdmin = async(req:Request, res:Response, next:NextFunction): 
     
     
 }
-/*
-exports.isProfessor = async(req, res, next) => {
-    let tipoUser = req.headers["user-type"];
-
-    if (!tipoUser) {
-        return res.status(403).send({
-            message: "O tipo de utilizador não foi fornecido!"
-        });
-    } else if (tipoUser !== "professor") {
-        return res.status(403).send({
-            message: "O tipo de utilizador têm que ser obrigatóriamente professor para aceder a esta route!"
-        });
-    }
-
-    let userData = await professorModel.ProfessorExisteNaBaseDeDados(req.loggedUserId)
-
-    if (userData.kind === "professor_existe") {
-        next();
-    } else if (userData.kind === "professor_nao_existe") {
-        res.status(500).send({
-            message: `O professor com id: ${req.loggedUserId} não existe.`
-        });
-    } else {
-        res.status(500).send({
-            message: `Erro a verificar se o professor é valido.`
-        });
-    }
-};*/

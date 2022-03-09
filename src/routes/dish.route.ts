@@ -10,12 +10,12 @@ const router = express.Router();
 router.use(authenticateJwt);
 
 router.route("/")
-    .get(authController.verifyAdmin,controller.list)
-    .post(controller.create);
+    .get(controller.list)
+    .post(authController.verifyAdmin,controller.create);
 
 router.route("/:dishId")
     .get(controller.getById)
-    .put(controller.updateById)
-    .delete(controller.deleteById);
+    .put(authController.verifyAdmin,controller.updateById)
+    .delete(authController.verifyAdmin,controller.deleteById);
 
 export default router;
