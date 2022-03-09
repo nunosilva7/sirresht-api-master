@@ -134,8 +134,10 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
             next({ status: 404, message: `User with id ${req.params.userId} not found` });
             return;
         }
-
-        res.status(204).end();
+        
+        res.status(200).send({ message: `User with id ${req.params.userId} UPDATED!` });
+        
+      
     }
     catch (err) {
         next(err);
@@ -167,7 +169,7 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send(`User with id ${req.params.userId} DELETED!`);
     }
     catch (err) {
         next(err);
@@ -202,7 +204,7 @@ export const updateAvatarById = async (req: Request, res: Response, next: NextFu
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send(`User with id ${req.params.userId} UPDATED!`);
     }
     catch (err) {
         next(err);

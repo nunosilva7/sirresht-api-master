@@ -215,7 +215,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
             }
 
             t.afterCommit(() => {
-                res.status(204).end();
+                res.status(200).send({message: `Menu with id ${req.params.menuId} UPDATED!`});
             });
         });
     }
@@ -249,7 +249,7 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send({message: `Menu with id ${req.params.menuId} DELETED!`});
     }
     catch (err) {
         next(err);

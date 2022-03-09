@@ -223,7 +223,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send({message: `Menu with id ${req.params.menuId} UPDATED!`});
     }
     catch (err) {
         next(err);

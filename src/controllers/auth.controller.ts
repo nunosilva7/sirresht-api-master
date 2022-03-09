@@ -138,11 +138,11 @@ export const deleteAccountById = async (req: Request, res: Response, next: NextF
         });
         
         if (!destroyedRows) {
-            next({ status: 404, message: `User with id ${req.body.id} not found` });
+            next({ status: 404, message: `User with id ${(req as RequestWithAuthentication).userId} not found` });
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send(`User with id ${(req as RequestWithAuthentication).userId} DELETED!`);
     }
     catch (err) {
         next(err);
@@ -177,7 +177,7 @@ export const updatePasswordByEmail = async (req: Request, res: Response, next: N
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send({message: `User with email ${req.body.email} UPDATED!` });
     }
     catch (err) {
         next(err);
@@ -218,7 +218,7 @@ export const verifyAdmin = async(req:Request, res:Response, next:NextFunction): 
     }
     else{
         console.log(role)
-        next();
+        next({ status: 200, message: `Verified admin`});
     }
     
     

@@ -177,7 +177,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send({message: `Dish with id ${req.params.dishId} UPDATED!`});
     }
     catch (err) {
         next(err);
@@ -209,7 +209,7 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
             return;
         }
 
-        res.status(204).end();
+        res.status(200).send({message: `Dish with id ${req.params.dishId} DELETED!`});
     }
     catch (err) {
         next(err);
