@@ -161,7 +161,8 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
         const destroyedRows = await sequelize.models.user.destroy({
             where: {
                 id: req.params.userId
-            }
+            },
+            force:true //hard-delete user
         });
         
         if (!destroyedRows) {
