@@ -260,3 +260,43 @@ export const updateParticipants = async (req: Request, res: Response, next: Next
         next(err);
     }
 }
+
+/**
+ * Delete a reservation by its id
+ * @route DELETE /api/v1/reservations/:reservationId
+ */
+ export const deleteById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("reservationId", "Reservation id cannot be less than 1").isInt({ min: 1 }).run(req);
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+
+    try {
+        const destroyedRows = await sequelize.models.reservation.destroy({
+            where: {
+                id: req.params.reservationId
+            },
+           
+        });
+        await sequelize.models.participant.destroy({
+            where: {
+                reservation_id: req.params.reservationId
+            },
+            
+        })
+
+        if (!destroyedRows) {
+            next({ status: 404, message: `Reservation with id ${req.params.reservationId} not found` });
+            return;
+        }
+       
+
+        res.status(200).send({message: `Reservation with id ${req.params.reservationId} DELETED!`});
+    }
+    catch (err) {
+        next(err);
+    }
+}

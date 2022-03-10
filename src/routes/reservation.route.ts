@@ -14,6 +14,7 @@ router.route("/")
 router.route("/:reservationId")
     .get(controller.getById)
     .put(controller.updateById)
+    .delete(controller.deleteById)
 
 router.route("/:reservationId/participants")
     .post(controller.updateParticipants)
