@@ -75,7 +75,7 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
     await body("startDate", "Start date is missing or is not a valid date").custom(isDatetime).run(req);
     await body("endDate", "End date is missing or is not a valid date").custom(isDatetime).run(req);
     await body("price", "Price is missing, is negative, or is not in a valid decimal format").isFloat({ min: 0 })
-        .isDecimal({ force_decimal: true, decimal_digits: "1,2" }).run(req);
+        .isDecimal({ force_decimal: false, decimal_digits: "1,2" }).run(req);
     await body("openReservations", "Open reservations is missing or is not an integer between 1 and 99")
         .isInt({ min: 1, max: 99 }).run(req);
     // await body("dishes", "(to do)").run(req);

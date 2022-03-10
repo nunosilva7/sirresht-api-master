@@ -218,7 +218,7 @@ export const verifyAdmin = async(req:Request, res:Response, next:NextFunction): 
     }
     else{
         console.log(role)
-        next({ status: 200, message: `Verified admin`});
+        next();
     }
     
     
