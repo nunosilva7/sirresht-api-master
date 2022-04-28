@@ -4,6 +4,7 @@ import sequelize, { Op } from "../sequelize";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import {RequestWithAuthentication} from "../middleware/auth/authenticateJwt";
+import { Json } from "sequelize/types/lib/utils";
 
 const saltRounds = 10;
 
@@ -56,9 +57,10 @@ export const signUp = async (req: Request, res: Response, next: NextFunction): P
  */
 export const signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await body("email", "Email is missing or is not a valid email address").trim().escape().isEmail().run(req);
-    await body("password", "Password is missing or is too weak").isStrongPassword().run(req);
+    await body("password", "Password doesn't match").run(req);
 
     const result = validationResult(req);
+    
     if (!result.isEmpty()) {
         res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
         return;
@@ -72,21 +74,30 @@ export const signIn = async (req: Request, res: Response, next: NextFunction): P
             include: sequelize.models.role
         });
 
+        
+        
         if (!user) {
-            next({ status: 401, message: `Authentication failed` });
+            next({ status: 401, message: `Email is missing or is not a valid email address` });
             return;
         }
+        let info = JSON.stringify(user)
+        console.log(info)
+        let info2 = JSON.parse(info)
+        console.log(info2.id)
+       
 
         // @ts-ignore
         const passwordsMatch = await bcrypt.compare(req.body.password, user.hashedPassword);
-        
+       
         if (passwordsMatch) {
             // @ts-ignore
+            
             const accessToken = jwt.sign({ userId: user.id, role: user.role.desc}, process.env.ACCESS_TOKEN_SECRET)
-            res.status(200).json({ accessToken: accessToken });
+            
+            res.status(200).json({ accessToken: accessToken, userId:info2.id});
         }
         else {
-            next({ status: 401, message: `Authentication failed` });
+            next({ status: 401, message: `Password doesn't match` });
         }
     }
     catch (err) {
