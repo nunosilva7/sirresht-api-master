@@ -8,15 +8,21 @@ const router = express.Router();
 router.route("/")
     .get(controller.list)
 
+router.route("/nextMenu")
+    .get(controller.getLastById);
+
 // require JWT authentication for the routes below
 router.use(authenticateJwt);
 
 router.route("/")
-    .post(authController.verifyAdmin,controller.create);
+    .post(authController.verifyAdmin, controller.create)
+
+
+
 
 router.route("/:menuId")
     .get(controller.getById)
-    .put(authController.verifyAdmin,controller.updateById)
-    .delete(authController.verifyAdmin,controller.deleteById);
+    .put(authController.verifyAdmin, controller.updateById)
+    .delete(authController.verifyAdmin, controller.deleteById);
 
 export default router;

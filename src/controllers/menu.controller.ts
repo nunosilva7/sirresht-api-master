@@ -161,6 +161,33 @@ export const getById = async (req: Request, res: Response, next: NextFunction): 
     }
 }
 
+export const getLastById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const menu = await sequelize.models.menu.findOne({
+            order:[['id', 'DESC']],
+            attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+            include: {
+                model: sequelize.models.dish,
+                attributes: { exclude: ["courseId", "createdAt", "updatedAt", "deletedAt"] },
+                include: {
+                    // @ts-ignore
+                    model: sequelize.models.course,
+                    attributes: ["id", "name"]
+                },
+                through: {
+                    attributes: ["dishQuantity"]
+                }
+            }
+        });
+
+
+        res.status(200).json(menu);
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
 /**
  * Update a menu by its id
  * @route PUT /api/v1/menus/:menuId
