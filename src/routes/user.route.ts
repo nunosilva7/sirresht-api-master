@@ -15,6 +15,9 @@ router.route("/:userId")
     .put(controller.updateById)
     .delete(controller.deleteById);
 
+router.route("/email/:userEmail")
+    .get(controller.getByEmail)
+
 router.route("/:userId/avatar")
     .patch(controller.updateAvatarById);
 

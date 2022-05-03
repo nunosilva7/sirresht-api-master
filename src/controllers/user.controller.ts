@@ -104,6 +104,38 @@ export const getById = async (req: Request, res: Response, next: NextFunction): 
         next(err);
     }
 }
+/**
+ * Search for a user by its email
+ * @route GET /api/v1/users/:userEmail
+ */
+
+export const getByEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await query("userEmail", "First name cannot be empty").optional().not().isEmpty().trim().escape().run(req);
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+
+    try {
+        const user = await sequelize.models.user.findOne({
+            where:{email:req.params.userEmail},
+            attributes: { exclude: ["roleId", "hashedPassword", "createdAt", "updatedAt", "deletedAt"] },
+          
+        });
+
+        if (!user) {
+            next({ status: 404, message: `User with id ${req.params.userEmail} not found` });
+            return;
+        }
+
+        res.status(200).json(user);
+    }
+    catch (err) {
+        next(err);
+    }
+}
 
 /**
  * Update a user by its id
