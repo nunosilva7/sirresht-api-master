@@ -341,3 +341,44 @@ export const getLastById = async (req: Request, res: Response, next: NextFunctio
         next(err);
     }
 }
+
+export const getAllByUserId = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("userId", "Dish id cannot be less than 1").isInt({ min: 1 }).run(req);
+    try {
+        const reservation = await sequelize.models.reservation.findAll({
+            order: [['id', 'DESC']],
+            attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+            include: [
+                {
+                    model: sequelize.models.reservationStatus,
+                    as: 'status',
+                    attributes: ["id", "desc"]
+                },
+                {
+                    model: sequelize.models.participant,
+                    where: { userId: req.params.userId },
+                    as: 'participants',
+                    attributes: { exclude: ["reservationId", "createdAt", "updatedAt", "deletedAt"] },
+                    include: [
+                        {
+                            model: sequelize.models.dish,
+                            attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+                            through: {
+                                attributes: []
+                            }
+                        },
+                        {
+                            model: sequelize.models.discount
+                        }
+                    ]
+                }
+            ]
+        });
+
+
+        res.status(200).json(reservation);
+    }
+    catch (err) {
+        next(err);
+    }
+}

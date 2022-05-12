@@ -11,8 +11,12 @@ router.route("/")
     .get(controller.list)
     .post(controller.create);
 
+
 router.route("/nextReservation/:userId")
     .get(controller.getLastById);
+
+router.route("/userReservations/:userId")
+    .get(controller.getAllByUserId);
 
 
 router.route("/:reservationId")
