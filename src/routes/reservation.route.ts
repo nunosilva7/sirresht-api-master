@@ -11,6 +11,10 @@ router.route("/")
     .get(controller.list)
     .post(controller.create);
 
+router.route("/nextReservation/:userId")
+    .get(controller.getLastById);
+
+
 router.route("/:reservationId")
     .get(controller.getById)
     .put(controller.updateById)
@@ -18,5 +22,8 @@ router.route("/:reservationId")
 
 router.route("/:reservationId/participants")
     .post(controller.updateParticipants)
+
+
+
 
 export default router;

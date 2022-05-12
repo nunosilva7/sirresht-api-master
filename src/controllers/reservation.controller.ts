@@ -223,7 +223,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
             return;
         }
 
-        res.status(200).send({message: `Menu with id ${req.params.menuId} UPDATED!`});
+        res.status(200).send({ message: `Menu with id ${req.params.menuId} UPDATED!` });
     }
     catch (err) {
         next(err);
@@ -245,7 +245,7 @@ export const updateParticipants = async (req: Request, res: Response, next: Next
 
     try {
         const reservation = await sequelize.models.reservation.findByPk(req.params.reservationId);
-            
+
         if (!reservation) {
             next({ status: 404, message: `Reservation with id ${req.params.reservationId} not found` });
             return;
@@ -265,7 +265,7 @@ export const updateParticipants = async (req: Request, res: Response, next: Next
  * Delete a reservation by its id
  * @route DELETE /api/v1/reservations/:reservationId
  */
- export const deleteById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const deleteById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await param("reservationId", "Reservation id cannot be less than 1").isInt({ min: 1 }).run(req);
 
     const result = validationResult(req);
@@ -279,22 +279,63 @@ export const updateParticipants = async (req: Request, res: Response, next: Next
             where: {
                 id: req.params.reservationId
             },
-           
+
         });
         await sequelize.models.participant.destroy({
             where: {
                 reservation_id: req.params.reservationId
             },
-            
+
         })
 
         if (!destroyedRows) {
             next({ status: 404, message: `Reservation with id ${req.params.reservationId} not found` });
             return;
         }
-       
 
-        res.status(200).send({message: `Reservation with id ${req.params.reservationId} DELETED!`});
+
+        res.status(200).send({ message: `Reservation with id ${req.params.reservationId} DELETED!` });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+export const getLastById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("userId", "Dish id cannot be less than 1").isInt({ min: 1 }).run(req);
+    try {
+        const reservation = await sequelize.models.reservation.findOne({
+            order: [['id', 'DESC']],
+            attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+            include: [
+                {
+                    model: sequelize.models.reservationStatus,
+                    as: 'status',
+                    attributes: ["id", "desc"]
+                },
+                {
+                    model: sequelize.models.participant,
+                   where: { userId: req.params.userId },
+                    as: 'participants',
+                    attributes: { exclude: ["reservationId", "createdAt", "updatedAt", "deletedAt"] },
+                    include: [
+                        {
+                            model: sequelize.models.dish,
+                            attributes: { exclude: ["createdAt", "updatedAt", "deletedAt"] },
+                            through: {
+                                attributes: []
+                            }
+                        },
+                        {
+                            model: sequelize.models.discount
+                        }
+                    ]
+                }
+            ]
+        });
+
+
+        res.status(200).json(reservation);
     }
     catch (err) {
         next(err);
