@@ -57,6 +57,13 @@ export const list = async (req: Request, res: Response, next: NextFunction): Pro
                         },
                         {
                             model: sequelize.models.discount
+                        },
+                        {
+                            
+                                model: sequelize.models.user,
+                                as: 'user',
+                                attributes: ["avatarReference" ]
+                            
                         }
                     ]
                 }
@@ -169,7 +176,14 @@ export const getById = async (req: Request, res: Response, next: NextFunction): 
                         },
                         {
                             model: sequelize.models.discount
-                        }
+                        },
+                        {
+                            
+                            model: sequelize.models.user,
+                            as: 'user',
+                            attributes: ["avatarReference" ]
+                        
+                    }
                     ]
                 }
             ]
