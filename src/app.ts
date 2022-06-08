@@ -12,12 +12,12 @@ import reservationsRouter from "./routes/reservation.route";
 import usersRouter from "./routes/user.route";
 
 const app = express();
-
+/*
 const corsOptions = {
     origin: "http://localhost:8080"
-};
+};*/
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 // test if the connection to the database is OK
 (async () => {

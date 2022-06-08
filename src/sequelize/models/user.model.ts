@@ -28,7 +28,10 @@ export default (sequelize: Sequelize): void => {
         },
         avatarReference: {
             type: DataTypes.TEXT
-        }
+        },
+        discount_id:{
+            type: DataTypes.TINYINT.UNSIGNED,
+        },
     }, {
         modelName: "user",
         tableName: "user",

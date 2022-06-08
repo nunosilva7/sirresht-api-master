@@ -17,6 +17,7 @@ export const signUp = async (req: Request, res: Response, next: NextFunction): P
     await body("lastName", "Last name is missing or cannot be empty").not().isEmpty({ ignore_whitespace: true }).trim().escape().run(req);
     await body("email", "Email is missing or is not a valid email address").trim().escape().isEmail().run(req);
     await body("password", "Password is missing or is too weak").isStrongPassword().run(req);
+    await body("discountId", "discount id").run(req);
 
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -40,7 +41,9 @@ export const signUp = async (req: Request, res: Response, next: NextFunction): P
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
-            hashedPassword: await bcrypt.hash(req.body.password, saltRounds)
+            discount_id:req.body.discountId,
+            hashedPassword: await bcrypt.hash(req.body.password, saltRounds),
+            
         });
 
         // @ts-ignore

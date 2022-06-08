@@ -215,7 +215,7 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
  */
 export const updateAvatarById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await param("userId", "User id cannot be less than 1").isInt({ min: 1 }).run(req);
-    await body("avatarReference", "Invalid reference").not().isEmpty({ ignore_whitespace: true }).trim().escape().run(req);
+    await body("avatarReference", "Invalid reference").not().isEmpty().run(req);
 
     const result = validationResult(req);
     if (!result.isEmpty()) {
