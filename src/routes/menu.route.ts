@@ -17,6 +17,13 @@ router.use(authenticateJwt);
 router.route("/")
     .post(authController.verifyAdmin, controller.create)
 
+router.route("/menuDish")
+    .get(authController.verifyAdmin, controller.menuDish)
+
+    router.route("/menuDish/:id")
+    .get(authController.verifyAdmin, controller.menuDishById)
+    
+
 
 
 

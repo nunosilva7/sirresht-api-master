@@ -110,7 +110,7 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
             for (const p of req.body.participants) {
                 const newParticipant = await sequelize.models.participant.create({
                     ...(p.userId && { userId: p.userId }),
-                    ...(!p.userId && {
+                    ...(p.userId && {
                         name: p.name,
                         email: p.email,
                     }),
@@ -347,6 +347,8 @@ export const getLastById = async (req: Request, res: Response, next: NextFunctio
                 }
             ]
         });
+        
+
 
 
         res.status(200).json(reservation);

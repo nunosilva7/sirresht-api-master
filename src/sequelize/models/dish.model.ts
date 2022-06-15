@@ -17,7 +17,11 @@ export default (sequelize: Sequelize): void => {
         isALaCarte: {
             type: DataTypes.BOOLEAN,
             allowNull: false
-        }
+        },
+        imageReference: {
+            type: DataTypes.TEXT
+        },
+       
     }, {
         modelName: "dish",
         tableName: "dish",

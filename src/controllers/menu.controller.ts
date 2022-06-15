@@ -282,3 +282,57 @@ export const deleteById = async (req: Request, res: Response, next: NextFunction
         next(err);
     }
 }
+
+export const menuDish = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await query("date", "Queried date is not valid").optional().isDate().run(req);
+    await query("between", "Queried range is not valid").optional().custom(isDateRange).run(req);
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+
+    // convert query params to JS date objects
+    const date = (typeof req.query.date === "string") ? new Date(req.query.date) : undefined;
+    const between = (() => {
+        if (typeof req.query.between !== "string")
+            return undefined;
+        
+        const range = req.query.between.split(",");
+        return [new Date(range[0]), new Date(range[1])]
+    })();
+
+    try {
+        const rows = await sequelize.models.menuDish.findAll();
+
+        res.status(200).json(rows);
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+export const menuDishById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("id", "Menu id cannot be less than 1").isInt({ min: 1 }).run(req);
+
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+
+    try {
+        const menu = await sequelize.models.menuDish.findAll({where:{ menuId: req.params.id}});
+
+        if (!menu) {
+            next({ status: 404, message: `Menu with id ${req.params.id} not found` });
+            return;
+        }
+
+        res.status(200).json(menu);
+    }
+    catch (err) {
+        next(err);
+    }
+}

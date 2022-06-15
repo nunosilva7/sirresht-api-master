@@ -97,7 +97,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction): P
             
             const accessToken = jwt.sign({ userId: user.id, role: user.role.desc}, process.env.ACCESS_TOKEN_SECRET)
             
-            res.status(200).json({ accessToken: accessToken, userId:info2.id});
+            res.status(200).json({ accessToken: accessToken, userId:info2.id, role:info2.role.desc});
         }
         else {
             next({ status: 401, message: `Password doesn't match` });

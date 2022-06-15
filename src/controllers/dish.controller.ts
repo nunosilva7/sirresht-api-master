@@ -98,7 +98,8 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
         const newDish = await sequelize.models.dish.create({
             name: req.body.name,
             courseId: req.body.courseId,
-            isALaCarte: req.body.isALaCarte
+            isALaCarte: req.body.isALaCarte,
+            imageReference: req.body.imageReference
         });
 
         // @ts-ignore
