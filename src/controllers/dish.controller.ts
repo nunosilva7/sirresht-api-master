@@ -165,6 +165,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
     try {
         const [affectedRows] = await sequelize.models.dish.update({
             name: req.body.name,
+            imageReference:req.body.imageReference,
             courseId: req.body.courseId,
             isALaCarte: req.body.isALaCarte
         }, {
