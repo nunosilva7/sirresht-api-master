@@ -202,17 +202,15 @@ export const getById = async (req: Request, res: Response, next: NextFunction): 
 }
 
 /**
- * Update a menu by its id
- * @route PUT /api/v1/menus/:menuId
+ * Update a reservation status by its id
+ * @route PUT /api/v1/reservations/:reservationId
  */
 export const updateById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    await param("menuId", "Menu id cannot be less than 1").isInt({ min: 1 }).run(req);
-    await body("startDate", "Start date is missing or is not a valid date").custom(isDatetime).run(req);
-    await body("endDate", "End date is missing or is not a valid date").custom(isDatetime).run(req);
-    await body("price", "Price is missing, is negative, or is not in a valid decimal format").isFloat({ min: 0 })
-        .isDecimal({ force_decimal: true, decimal_digits: "1,2" }).run(req);
-    await body("openReservations", "Open reservations is missing or is not an integer between 1 and 99")
-        .isInt({ min: 1, max: 99 }).run(req);
+    await param("reservationId", "ReservationId  cannot be less than 1").isInt({ min: 1 }).run(req);
+    await body("statusId", "statusId  cannot be less than 1").isInt({ min: 1 }).run(req);
+    await body("reservationStatusId", "reservationStatusId  cannot be less than 1").isInt({ min: 1 }).run(req);
+    
+    
 
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -221,23 +219,23 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
     }
 
     try {
-        const [affectedRows] = await sequelize.models.menu.update({
-            startDate: req.body.startDate,
-            endDate: req.body.endDate,
-            price: req.body.price,
-            openReservations: req.body.openReservations
+        const [affectedRows] = await sequelize.models.reservation.update({
+            
+            statusId: req.body.statusId,
+            reservationStatusId: req.body.reservationStatusId,
+           
         }, {
             where: {
-                id: req.params.menuId
+                id: req.params.reservationId
             }
         });
 
         if (!affectedRows) {
-            next({ status: 404, message: `Menu with id ${req.params.menuId} not found` });
+            next({ status: 404, message: `Reservation with id ${req.params.reservationId} not found` });
             return;
         }
 
-        res.status(200).send({ message: `Menu with id ${req.params.menuId} UPDATED!` });
+        res.status(200).send({ message: `Reservation with id ${req.params.reservationId} UPDATED!` });
     }
     catch (err) {
         next(err);

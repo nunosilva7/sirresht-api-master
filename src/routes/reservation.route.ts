@@ -1,6 +1,7 @@
 import express from "express";
 import * as controller from "../controllers/reservation.controller";
 import authenticateJwt from "../middleware/auth/authenticateJwt";
+import * as authController from "../controllers/auth.controller"
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
 router.use(authenticateJwt);
 
 router.route("/")
-    .get(controller.list)
+    .get(authController.verifyAdmin, controller.list)
     .post(controller.create);
 
 
