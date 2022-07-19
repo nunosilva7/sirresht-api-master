@@ -23,10 +23,17 @@ router.route("/userReservations/:userId")
 router.route("/:reservationId")
     .get(controller.getById)
     .put(controller.updateById)
+
     .delete(controller.deleteById)
 
+router.route("/:reservationId/increment")
+    .put(controller.incrementSupplements)
+
+router.route("/:reservationId/payment/:participantId")
+    .put(controller.payment)
+
 router.route("/:reservationId/participants")
-    .post(controller.updateParticipants)
+    .patch(controller.updateParticipants)
 
 
 

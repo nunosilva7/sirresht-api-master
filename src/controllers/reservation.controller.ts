@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { body, param, query, validationResult } from "express-validator";
 import { isDatetime, isParticipantsArray } from "../custom-validators";
 import sequelize, { Op } from "../sequelize";
+import reservationStatusModel from "../sequelize/models/reservationStatus.model";
 
 /**
  * Search for reservations
@@ -241,6 +242,87 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
         next(err);
     }
 }
+/**
+ * Increment supplements of a rerservation
+ * @route PUT api/v1/reservations/:reservationId
+ */
+
+ export const incrementSupplements = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("reservationId", "ReservationId  cannot be less than 1").isInt({ min: 1 }).run(req);
+    await body("supplements", "supplements is missing, is negative, or is not in a valid decimal format").isFloat({ min: 0 })
+    .isDecimal({ force_decimal: true, decimal_digits: "1,2" }).run(req);
+   
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+   
+    
+    try {
+        const affectedRows = await sequelize.models.reservation.update({
+            
+            supplementsPrice: req.body.supplements
+            
+        },{
+            where:{
+                id: req.params.reservationId
+            }
+        });
+          
+        if (affectedRows==null) {
+          
+            next({ status: 404, message: `Reservation with id ${req.params.reservationId} not found` });
+            return;
+        }
+        
+        res.status(200).send({ message: `Reservation with id ${req.params.reservationId} UPDATED!` });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+export const payment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("reservationId", "ReservationId  cannot be less than 1").isInt({ min: 1 }).run(req);
+    await param("participantId", "participantId  cannot be less than 1").isInt({ min: 1 }).run(req);
+    await body("amountPaid", "supplements is missing, is negative, or is not in a valid decimal format").isFloat({ min: 0 })
+    .isDecimal({ force_decimal: true, decimal_digits: "1,2" }).run(req);
+   
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+   
+    
+    try {
+        const affectedRows = await sequelize.models.participant.update({
+            
+            amountPaid: req.body.amountPaid
+            
+        },{
+            where:{
+                id: req.params.participantId
+            }
+        });
+         await sequelize.models.reservation.increment("amountReceived",{by: req.body.amountPaid, where:{id:req.params.reservationId}})
+          
+        if (affectedRows==null ) {
+          
+            next({ status: 404, message: `Reservation with id ${req.params.reservationId} not found` });
+            return;
+        }
+        
+        res.status(200).send({ message: `Reservation with id ${req.params.reservationId} UPDATED!` });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+
+
 
 /**
  * Update the participants of a reservation
@@ -248,6 +330,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
  */
 export const updateParticipants = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await param("reservationId", "Reservation id cannot be less than 1").isInt({ min: 1 }).run(req);
+    await body("participants").custom(isParticipantsArray).run(req);
 
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -262,6 +345,8 @@ export const updateParticipants = async (req: Request, res: Response, next: Next
             next({ status: 404, message: `Reservation with id ${req.params.reservationId} not found` });
             return;
         }
+        
+      
 
         // @ts-ignore
         await reservation.setParticipants(participants);
