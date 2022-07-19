@@ -30,7 +30,7 @@ router.route("/:reservationId/increment")
     .put(controller.incrementSupplements)
 
 router.route("/:reservationId/payment/:participantId")
-    .put(controller.payment)
+    .put(controller.paymentByParticipant)
 
 router.route("/:reservationId/participants")
     .patch(controller.updateParticipants)

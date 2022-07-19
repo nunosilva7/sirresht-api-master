@@ -90,6 +90,8 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
     await body("message", "Message cannot be empty").optional().not().isEmpty({ ignore_whitespace: true }).trim().escape().run(req);
     await body("isTableCommunal", "The table being communal is missing or is not a boolean").isBoolean().run(req);
     await body("participants").custom(isParticipantsArray).run(req);
+    await body("supplementsPrice", "Supplements price is missing, is negative, or is not in a valid decimal format")
+    .isFloat({ min: 0 }).isDecimal({ force_decimal: true, decimal_digits: "1,2" }).run(req);
 
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -104,7 +106,8 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
                 startDate: req.body.startDate,
                 endDate: req.body.endDate,
                 reservationPrice: req.body.reservationPrice,
-                isTableCommunal: req.body.isTableCommunal
+                isTableCommunal: req.body.isTableCommunal,
+                supplementsPrice: req.body.supplementsPrice
             }, {
                 transaction: t
             });
@@ -260,6 +263,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
    
     
     try {
+        /*
         const affectedRows = await sequelize.models.reservation.update({
             
             supplementsPrice: req.body.supplements
@@ -268,7 +272,8 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
             where:{
                 id: req.params.reservationId
             }
-        });
+        });*/
+       const affectedRows = await sequelize.models.reservation.increment("supplementsPrice",{by: req.body.supplements, where:{id:req.params.reservationId}})
           
         if (affectedRows==null) {
           
@@ -283,7 +288,7 @@ export const updateById = async (req: Request, res: Response, next: NextFunction
     }
 }
 
-export const payment = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const paymentByParticipant = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await param("reservationId", "ReservationId  cannot be less than 1").isInt({ min: 1 }).run(req);
     await param("participantId", "participantId  cannot be less than 1").isInt({ min: 1 }).run(req);
     await body("amountPaid", "supplements is missing, is negative, or is not in a valid decimal format").isFloat({ min: 0 })
