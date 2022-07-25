@@ -3,6 +3,8 @@ import { body, param, query, validationResult } from "express-validator";
 import { isIdArray } from "../custom-validators";
 import sequelize, { Op } from "../sequelize";
 
+
+
 /**
  * Search for users
  * @route GET /api/v1/users
@@ -243,3 +245,7 @@ export const updateAvatarById = async (req: Request, res: Response, next: NextFu
         next(err);
     }
 }
+
+
+
+

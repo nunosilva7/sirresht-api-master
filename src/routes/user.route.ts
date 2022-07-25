@@ -2,6 +2,7 @@ import express from "express";
 import * as controller from "../controllers/user.controller";
 import authenticateJwt from "../middleware/auth/authenticateJwt";
 
+
 const router = express.Router();
 
 // require JWT authentication for the routes below
@@ -20,5 +21,7 @@ router.route("/email/:userEmail")
 
 router.route("/:userId/avatar")
     .patch(controller.updateAvatarById);
+
+
 
 export default router;
