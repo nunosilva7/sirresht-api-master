@@ -336,3 +336,61 @@ export const menuDishById = async (req: Request, res: Response, next: NextFuncti
         next(err);
     }
 }
+
+export const decrementMenuOpenReservations = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("menuId", "menuId  cannot be less than 1")
+    await body("reservations", "reservations is missing, is negative, or is not in a valid decimal format").isInt({ min: 1 }).run(req);
+   
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+   
+    
+    try {
+       
+       const affectedRows = await sequelize.models.menu.increment("openReservations",{by: -req.body.reservations, where:{id:req.params.menuId}})
+          
+        if (affectedRows==null) {
+          
+            next({ status: 404, message: `Menu with id ${req.params.menuId} not found` });
+            return;
+        }
+        
+        res.status(200).send({ message: `Menu with id ${req.params.menuId} UPDATED!` });
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+export const decrementMenuDishQuantity = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await param("id", "menuId  cannot be less than 1")
+    await param("dishId", "dishId  cannot be less than 1")
+    await body("dishQuantity", "dishQuantity is missing, is negative, or is not in a valid decimal format").isInt({ min: 1 }).run(req);
+   
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        res.status(422).json({ errors: result.array({ onlyFirstError: true }) });
+        return;
+    }
+   
+    
+    try {
+        
+       
+       const affectedRows = await sequelize.models.menuDish.increment("dishQuantity",{by: -req.body.dishQuantity, where:{menuId:req.params.id,dishId:req.params.dishId}})
+          
+        if (affectedRows==null) {
+          
+            next({ status: 404, message: `Menu with id ${req.params.id} not found` });
+            return;
+        }
+        
+        res.status(200).send({ message: `Menu with id ${req.params.id} UPDATED!` });
+    }
+    catch (err) {
+        next(err);
+    }
+}

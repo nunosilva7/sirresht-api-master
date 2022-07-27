@@ -20,8 +20,11 @@ router.route("/")
 router.route("/menuDish")
     .get(authController.verifyAdmin, controller.menuDish)
 
-    router.route("/menuDish/:id")
+router.route("/menuDish/:id")
     .get(authController.verifyAdmin, controller.menuDishById)
+
+router.route("/menuDish/:id/dish/:dishId")
+    .put(authController.verifyAdmin, controller.decrementMenuDishQuantity)
     
 
 
@@ -31,5 +34,8 @@ router.route("/:menuId")
     .get(controller.getById)
     .put(authController.verifyAdmin, controller.updateById)
     .delete(authController.verifyAdmin, controller.deleteById);
+
+router.route("/:menuId/reservations")
+    .put(authController.verifyAdmin, controller.decrementMenuOpenReservations)
 
 export default router;

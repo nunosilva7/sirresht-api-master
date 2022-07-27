@@ -329,6 +329,8 @@ export const paymentByParticipant = async (req: Request, res: Response, next: Ne
 
 
 
+
+
 /**
  * Update the participants of a reservation
  * @route PATCH /api/v1/reservations/:reservationId/participants
