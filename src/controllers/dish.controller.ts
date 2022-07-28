@@ -65,8 +65,15 @@ export const list = async (req: Request, res: Response, next: NextFunction): Pro
                             [Op.like]: `${course}`
                         }
                     }
-                })
-            }]
+                    
+                }),
+             
+            },
+           
+            
+        ]
+       
+
         });
 
         res.status(200).json({

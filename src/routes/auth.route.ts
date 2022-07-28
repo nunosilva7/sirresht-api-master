@@ -25,4 +25,7 @@ router.route("/resetPassword")
 router.route("/validAccessToken/owner")
     .get(controller.getValidAccessTokenOwner);
 
+
+
+
 export default router;

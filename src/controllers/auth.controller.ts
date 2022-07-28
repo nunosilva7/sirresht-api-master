@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 import sequelize, { Op } from "../sequelize";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -238,3 +238,4 @@ export const verifyAdmin = async(req:Request, res:Response, next:NextFunction): 
     
     
 }
+
