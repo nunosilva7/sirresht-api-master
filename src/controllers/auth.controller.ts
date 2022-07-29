@@ -95,7 +95,7 @@ export const signIn = async (req: Request, res: Response, next: NextFunction): P
         if (passwordsMatch) {
             // @ts-ignore
             
-            const accessToken = jwt.sign({ userId: user.id, role: user.role.desc}, process.env.ACCESS_TOKEN_SECRET)
+            const accessToken = jwt.sign({ userId: user.id, role: user.role.desc}, process.env.ACCESS_TOKEN_SECRET || "coiso")
             
             res.status(200).json({ accessToken: accessToken, userId:info2.id, role:info2.role.desc});
         }
