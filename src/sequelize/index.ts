@@ -16,8 +16,8 @@ import addAssociations from "./associations";
 import seedDatabase from "./seeders";
 
 // passing the database connection parameters
-const sequelize = new Sequelize(process.env.DB_NAME!, process.env.DB_USER!, process.env.DB_PASS, {
-    host: process.env.DB_HOST,
+const sequelize = new Sequelize(process.env.DB_NAME! || "teresaterroso_pfe_NS", process.env.DB_USER! || "teresaterroso_pfe_NS", process.env.DB_PASS || "&2$]I+,t)5rG", {
+    host: process.env.DB_HOST || "pw2.joaoferreira.eu",
     dialect: 'mysql' as Dialect,
 	pool: {
 		max: 500,
