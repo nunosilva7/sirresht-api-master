@@ -52,7 +52,7 @@ addAssociations(sequelize);
 
 (async () => {
 	// sync sequelize's models with the database
-	await sequelize.sync({ alter: true, match: /^sql/ });
+	await sequelize.sync({ alter: true });
 
 	// populate the database with necessary data
 	seedDatabase(sequelize);
