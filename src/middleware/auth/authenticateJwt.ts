@@ -26,7 +26,7 @@ const authenticateJwt = async (req: Request, res: Response, next: NextFunction):
     const token = authorizationHeader.replace("Bearer ", "");
 
     try {
-        const decodedPayload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as JwtPayload;
+        const decodedPayload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET! || "coiso") as JwtPayload;
         (req as RequestWithAuthentication).userId = +decodedPayload.userId;
         (req as RequestWithAuthentication).role = decodedPayload.role;
         next();
