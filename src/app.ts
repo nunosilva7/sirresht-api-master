@@ -51,5 +51,5 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 app.use(errorHandler);
 
 app.listen(port, () => {
-    console.log(`Resht API listening at http://localhost:${port}`);
+    console.log(`Resht API listening at PORT ${port}`);
 });
